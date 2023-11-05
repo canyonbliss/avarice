@@ -10,11 +10,11 @@ elif [ -x "$(command -v makepkg)" ]; then
 fi
 
 PACKAGE="$TOOL"_"$ARCH"
-DESTDIR=./"$PACKAGE"
+DESTDIR="$PACKAGE"
 
 if [ $DISTRO == deb ]; then
 	mkdir $DESTDIR
-	make install
+	make DESTDIR=$DESTDIR install
 	dpkg-deb --build --root-owner-group $PACKAGE
 elif [ $DISTRO == arch ]; then
 	makepkg
