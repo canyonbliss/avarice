@@ -168,7 +168,7 @@ int checkForDebugChar(void)
     }
 
     return (int)c;
-}    
+}
 
 static const unsigned char hexchars[] = "0123456789abcdef";
 
@@ -441,7 +441,7 @@ static bool singleStep()
     if (theJtagICE->codeBreakpointAt(newPC))
 	return true;
     // assume interrupt when PC goes into interrupt table
-    if (ignoreInterrupts && newPC < theJtagICE->deviceDef->vectors_end) 
+    if (ignoreInterrupts && newPC < theJtagICE->deviceDef->vectors_end)
 	return handleInterrupt();
 
     return true;
@@ -699,6 +699,7 @@ void talkToGdb(void)
     static char last_cmd = 0;
     static unsigned char *flashbuf;
     static int maxaddr;
+    bool bpok = false;
 
     ptr = getpacket(plen);
 
@@ -865,7 +866,7 @@ void talkToGdb(void)
 
         // Read in SPL SPH SREG
         jtagBuffer = theJtagICE->jtagRead(theJtagICE->statusAreaAddress(), 0x03);
-     
+
         if (jtagBuffer)
         {
             // We have SPL SPH SREG and need SREG SPL SPH
@@ -940,7 +941,7 @@ void talkToGdb(void)
                 {
                     // Request for a sequence of io registers
                     int offset;
-                    i = 0; 
+                    i = 0;
                     j = 0;
                     int count;
                     unsigned int addr;
@@ -982,7 +983,7 @@ void talkToGdb(void)
 
                             for (count = 0; count < j; count++)
                             {
-                                if ((io_reg_defs[i+count].name == 0x00) 
+                                if ((io_reg_defs[i+count].name == 0x00)
                                     || (io_reg_defs[i+count].flags != 0x00)
                                     || (io_reg_defs[i+count].reg_addr != addr))
                                 {
@@ -990,14 +991,14 @@ void talkToGdb(void)
                                 }
                                 addr++;
                             }
-								
+
                             if (count)
                             {
                                 // Read consecutive address io_registers
                                 jtagBuffer = theJtagICE->jtagRead(DATA_SPACE_ADDR_OFFSET +
                                                       io_reg_defs[i].reg_addr,
                                                       count);
-								
+
                                 if (jtagBuffer)
                                 {
                                     int k = 0;
@@ -1247,7 +1248,6 @@ void talkToGdb(void)
     case 'Z':
 	adding = true;
     case 'z':
-	error(1); // assume the worst.
 
 	// Add a Breakpoint. note: length specifier is ignored for now.
 	if (hexToInt(&ptr, &i) && *ptr++ == ',' &&
@@ -1280,25 +1280,31 @@ void talkToGdb(void)
 	    {
 		try
                 {
-                    theJtagICE->addBreakpoint(addr, mode, length);
+                    bpok = theJtagICE->addBreakpoint(addr, mode, length);
                 }
                 catch (jtag_exception&)
                 {
                     break;
                 }
+                if (bpok) ok();
+                // if not ok, we default to empty aka not supported instead of
+                // error
 	    }
 	    else
 	    {
 		try
                 {
-                    theJtagICE->deleteBreakpoint(addr, mode, length);
+                    bpok = theJtagICE->deleteBreakpoint(addr, mode, length);
                 }
                 catch (jtag_exception&)
                 {
                     break;
                 }
+                if (bpok) ok();
+                else error(1);
 	    }
-            ok();
+	} else {
+		error(1);
 	}
 	break;
 
@@ -1313,5 +1319,3 @@ void talkToGdb(void)
 	putpacket(remcomOutBuffer);
     }
 }
-
-

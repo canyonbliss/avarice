@@ -201,7 +201,7 @@ int jtag::safewrite(const void *b, int count)
       actual += n;
       buffer += n;
     }
-  fcntl(jtagBox, F_SETFL, flags); 
+  fcntl(jtagBox, F_SETFL, flags);
   return actual;
 }
 
@@ -895,6 +895,11 @@ bool jtag::layoutBreakpoints(void)
 	  // Xmega has only two hardware slots?
 	  remaining_bps[BREAKPOINT2_XMEGA_UNAVAIL] = false;
       }
+      else if (proto == PROTO_UPDI)
+      {
+        remaining_bps[2] = false;
+        remaining_bps[3] = false;
+      }
 
     bp_i = 0;
     while (!bp[bp_i].last)
@@ -1010,4 +1015,3 @@ bool jtag::layoutBreakpoints(void)
 
     return hadroom;
 }
-

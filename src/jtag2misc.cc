@@ -91,7 +91,5 @@ void jtag2::getJtagParameter(uchar item, uchar *&resp, int &respSize)
         throw;
     }
     if (resp[0] != RSP_PARAMETER || respSize <= 1)
-        throw jtag_exception("unexpected response to get paremater command");
+        throw jtag_exception("unexpected response to get parameter command");
 }
-
-

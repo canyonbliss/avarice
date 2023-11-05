@@ -197,6 +197,7 @@ struct updi_device_desc {
     unsigned char eeprom_page_size;
     unsigned char nvm_base_addr[2];
     unsigned char ocd_base_addr[2];
+    unsigned char unk[39];
 };
 
 #define fill_b4(u) \
@@ -213,7 +214,7 @@ enum dev_flags {
 
 typedef struct {
     const char* name;
-    const unsigned int device_id;      // Part Number from JTAG Device 
+    const unsigned int device_id;      // Part Number from JTAG Device
                                        // Identification Register
     unsigned int flash_page_size;      // Flash memory page size in bytes
     unsigned int flash_page_count;     // Flash memory page count
@@ -798,6 +799,8 @@ class jtag
   // Target device is an ATxmega one
   bool is_xmega;
 
+  enum debugproto proto;
+
   public:
   // Whether we are in "programming mode" (changes how program memory
   // is written, apparently)
@@ -848,7 +851,7 @@ class jtag
   // Basic JTAG I/O
   // -------------
 
-  /** Send initial configuration to setup the JTAG box itself. 
+  /** Send initial configuration to setup the JTAG box itself.
    **/
   virtual void initJtagBox(void) = 0;
 
