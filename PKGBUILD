@@ -1,6 +1,6 @@
 pkgname=avarice
 pkgver=2.14
-pkgrel=7
+pkgrel=8
 epoch=
 pkgdesc="GDB debug server for AVR microcontrollers"
 arch=('x86_64')
