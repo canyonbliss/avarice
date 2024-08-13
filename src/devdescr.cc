@@ -3263,6 +3263,40 @@ jtag_device_def_type deviceDefinitions[] = {
 
 		},
 	},
+	// DEV_ATTINY3226
+	{
+		"attiny3226",
+		0x9527,
+		128, 256,	// flash
+		64, 4,	// EEPROM
+		30 * 4,	// interrupt vectors
+		DEVFL_NONE,
+		attiny3226_io_registers,
+		false,
+		0x5F7, 0, // fuses
+		0, // osccal
+		0, // OCD revision
+		{
+			0	// no mkI support
+		},
+		{
+			0   // no mkII JTAG support
+		},
+		{
+			0   // no Xmega support
+		},
+		{
+			fill_b2(0x8000),	// Start address of Program memory
+			128,					// Page size of flash in bytes
+			64,					// Page size of EEPROM
+			fill_b2(0x1000),	// Address of NVMCTRL module
+			fill_b2(0x0F80),	// Address of OCD module
+			{ 0x94, 0x11, 0x8c, 0x0a, 0x98, 0x08, 0xdc, 0x05, 0xee, 0x02, 0x00, 0x80, 0x00, 0x00, 0x00,
+0x01, 0x40, 0x00, 0x0a, 0x05, 0xff, 0x00, 0xff, 0x00, 0x00, 0x14, 0x00, 0x13, 0x00, 0x11, 0x80,
+0x12, 0x8a, 0x12, 0x22, 0x95, 0x00, 0x00, 0x00 }, // TODO
+
+		},
+	},
 	// DEV_ATTINY861
 	{
 	"attiny861",
